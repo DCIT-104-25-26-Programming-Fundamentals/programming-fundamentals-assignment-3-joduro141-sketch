@@ -74,4 +74,103 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readlineSync = require('readline-sync');
+
+function add(a, b) {
+  return a + b;
+}
+
+function subtract(a, b) {
+  return a - b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+function divide(a, b) {
+  if (b === 0) {
+    return null;
+  }
+  return a / b;
+}
+
+function modulus(a, b) {
+  if (b === 0) {
+    return null;
+  }
+  return a % b;
+}
+
+function exponentiate(a, b) {
+  return a ** b;
+}
+
+function main() {
+  while (true) {
+    console.log('\n============================');
+    console.log('     SIMPLE CALCULATOR');
+    console.log('============================');
+    console.log('1. Addition');
+    console.log('2. Subtraction');
+    console.log('3. Multiplication');
+    console.log('4. Division');
+    console.log('5. Modulus');
+    console.log('6. Exponentiation');
+    console.log('7. Quit');
+
+    const choice = readlineSync.questionInt('Select an operation (1-7): ');
+
+    if (choice === 7) {
+      console.log('Goodbye!');
+      break;
+    }
+
+    if (choice < 1 || choice > 7) {
+      console.log('Invalid choice.');
+      continue;
+    }
+
+    if (choice === 5) {
+      const a = readlineSync.questionInt('Enter first number : ');
+      const b = readlineSync.questionInt('Enter second number: ');
+      const result = modulus(a, b);
+
+      if (result === null) {
+        console.log('Error: Cannot divide by zero.');
+      } else {
+        console.log(`Result: ${a} % ${b} = ${result}`);
+      }
+      continue;
+    }
+
+    const a = readlineSync.questionFloat('Enter first number : ');
+    const b = readlineSync.questionFloat('Enter second number: ');
+    let result;
+
+    if (choice === 1) {
+      result = add(a, b);
+      console.log(`Result: ${a} + ${b} = ${result.toFixed(2)}`);
+    } else if (choice === 2) {
+      result = subtract(a, b);
+      console.log(`Result: ${a} - ${b} = ${result.toFixed(2)}`);
+    } else if (choice === 3) {
+      result = multiply(a, b);
+      console.log(`Result: ${a} * ${b} = ${result.toFixed(2)}`);
+    } else if (choice === 4) {
+      result = divide(a, b);
+      if (result === null) {
+        console.log('Error: Cannot divide by zero.');
+      } else {
+        console.log(`Result: ${a} / ${b} = ${result.toFixed(2)}`);
+      }
+    } else if (choice === 6) {
+      result = exponentiate(a, b);
+      console.log(`Result: ${a} ^ ${b} = ${result.toFixed(2)}`);
+    }
+  }
+}
+
+main();
+
 

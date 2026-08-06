@@ -70,3 +70,169 @@
 
 const readlineSync = require('readline-sync');
 
+function parseRow(rowText, expectedCount) {
+  const row = rowText
+    .trim()
+    .split(' ')
+    .map(Number)
+    .filter(value => !Number.isNaN(value));
+
+  if (row.length !== expectedCount) {
+    return null;
+  }
+
+  return row;
+}
+
+function readMatrix(rows, cols) {
+  const matrix = [];
+
+  for (let r = 0; r < rows; r += 1) {
+    const line = readlineSync.question(`Enter row ${r + 1}: `);
+    const parsed = parseRow(line, cols);
+
+    if (parsed === null) {
+      console.log('Error: row must contain the correct number of values.');
+      return null;
+    }
+
+    matrix.push(parsed);
+  }
+
+  return matrix;
+}
+
+function printMatrix(matrix) {
+  for (let r = 0; r < matrix.length; r += 1) {
+    const row = matrix[r];
+    const formatted = row.map(value => String(value).padStart(4, ' ')).join('');
+    console.log(formatted);
+  }
+}
+
+function transposeMatrix(matrix) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const result = [];
+
+  for (let c = 0; c < cols; c += 1) {
+    const newRow = [];
+    for (let r = 0; r < rows; r += 1) {
+      newRow.push(matrix[r][c]);
+    }
+    result.push(newRow);
+  }
+
+  return result;
+}
+
+function addMatrices(matrixA, matrixB) {
+  const rows = matrixA.length;
+  const cols = matrixA[0].length;
+  const result = [];
+
+  for (let r = 0; r < rows; r += 1) {
+    const newRow = [];
+    for (let c = 0; c < cols; c += 1) {
+      newRow.push(matrixA[r][c] + matrixB[r][c]);
+    }
+    result.push(newRow);
+  }
+
+  return result;
+}
+
+function multiplyMatrices(matrixA, matrixB) {
+  const rowsA = matrixA.length;
+  const colsA = matrixA[0].length;
+  const colsB = matrixB[0].length;
+  const result = [];
+
+  for (let r = 0; r < rowsA; r += 1) {
+    const newRow = [];
+    for (let c = 0; c < colsB; c += 1) {
+      let sum = 0;
+      for (let k = 0; k < colsA; k += 1) {
+        sum += matrixA[r][k] * matrixB[k][c];
+      }
+      newRow.push(sum);
+    }
+    result.push(newRow);
+  }
+
+  return result;
+}
+
+function main() {
+  console.log('Matrix Transpose');
+  const rowsA = readlineSync.questionInt('Enter number of rows: ');
+  const colsA = readlineSync.questionInt('Enter number of columns: ');
+
+  if (rowsA <= 0 || colsA <= 0) {
+    console.log('Error: row and column counts must be positive.');
+    return;
+  }
+
+  const matrixA = readMatrix(rowsA, colsA);
+  if (matrixA === null) {
+    return;
+  }
+
+  console.log('\nOriginal Matrix:');
+  printMatrix(matrixA);
+
+  const transposed = transposeMatrix(matrixA);
+  console.log('\nTransposed Matrix:');
+  printMatrix(transposed);
+
+  console.log('\nMatrix Addition');
+  const rowsB = readlineSync.questionInt('Enter number of rows: ');
+  const colsB = readlineSync.questionInt('Enter number of columns: ');
+
+  if (rowsA !== rowsB || colsA !== colsB) {
+    console.log('Error: Matrices must have the same dimensions for addition.');
+    return;
+  }
+
+  const matrixB = readMatrix(rowsB, colsB);
+  if (matrixB === null) {
+    return;
+  }
+
+  const sumMatrix = addMatrices(matrixA, matrixB);
+  console.log('\nSum of matrices:');
+  printMatrix(sumMatrix);
+
+  console.log('\nMatrix Multiplication');
+  const rowsC = readlineSync.questionInt('Enter rows for matrix A: ');
+  const colsC = readlineSync.questionInt('Enter columns for matrix A: ');
+  const rowsD = readlineSync.questionInt('Enter rows for matrix B: ');
+  const colsD = readlineSync.questionInt('Enter columns for matrix B: ');
+
+  if (rowsC <= 0 || colsC <= 0 || rowsD <= 0 || colsD <= 0) {
+    console.log('Error: row and column counts must be positive.');
+    return;
+  }
+
+  if (colsC !== rowsD) {
+    console.log('Error: Number of columns in A must match number of rows in B.');
+    return;
+  }
+
+  const matrixC = readMatrix(rowsC, colsC);
+  if (matrixC === null) {
+    return;
+  }
+
+  const matrixD = readMatrix(rowsD, colsD);
+  if (matrixD === null) {
+    return;
+  }
+
+  const product = multiplyMatrices(matrixC, matrixD);
+  console.log('\nProduct matrix:');
+  printMatrix(product);
+}
+
+main();
+
